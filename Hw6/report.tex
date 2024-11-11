@@ -1,0 +1,65 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{geometry, CJKutf8}
+\geometry{margin=1.5cm, vmargin={0pt,1cm}}
+\setlength{\topmargin}{-1cm}
+\setlength{\paperheight}{29.7cm}
+\setlength{\textheight}{25.3cm}
+
+% useful packages.
+\usepackage{xcolor}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{layout}
+\usepackage{listings}
+\usepackage{float, caption}
+
+\lstset{  
+  basicstyle=\ttfamily,  
+  backgroundcolor=\color{white},  
+  frame=single,  
+  framesep=5pt,  
+  rulecolor=\color{black},   
+  breaklines=true,  
+  xleftmargin=\parindent,  
+  xrightmargin=\parindent  
+}  
+
+% some common command
+\newcommand{\dif}{\mathrm{d}}
+\newcommand{\avg}[1]{\left\langle #1 \right\rangle}
+\newcommand{\difFrac}[2]{\frac{\dif #1}{\dif #2}}
+\newcommand{\pdfFrac}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\OFL}{\mathrm{OFL}}
+\newcommand{\UFL}{\mathrm{UFL}}
+\newcommand{\fl}{\mathrm{fl}}
+\newcommand{\op}{\odot}
+\newcommand{\Eabs}{E_{\mathrm{abs}}}
+\newcommand{\Erel}{E_{\mathrm{rel}}}
+
+\begin{document}
+
+\pagestyle{fancy}
+\fancyhead{}
+\lhead{骆弘毅, 3210103287}
+\chead{数据结构与算法第六次作业}
+\rhead{Nov.10th, 2024}
+
+\section{remove函数的设计思路}
+这次作业是基于上次作业的remove函数，将其改进成AVL的remove函数。(虽然我个人认为本次作业的要求有一点不明确，因为avl树的remove是基于删除前已经是avl树的前提，因此当我们在做旋转时，我们是可以保证与被删除路径无关的子树左右树高差不超过1，但是在本次作业的测试中，第二个连续删除30万个数据的结构是一条链表，是一颗高度不平衡的树，如果我们按照avl树的删除操作对其进行旋转的话，他并不能变成一个avl树，而是会变成从中对半分开的两条链表，所以这个删除操作只能让树的平衡性一定程度上变好却无法达到avl树的要求。)\\
+\indent 由于需要沿着搜索路径由下而上进行平衡，因此我们需要进行递归的操作，进而达到存储搜索路径的目的。因此我对我上次的第五次作业做了修改，上次由于记录了当前节点的父母节点，使得整个remove函数显得非常冗长，因此我采用了示范代码的写法将左右子树的节点作为左值引用传入函数，并不断递归，这样仅需修改传入的值便可以修改其父母节点的左右子树。同时，我们必须保证每一步删除或者旋转操作都及时更新树高，因此我用了avl的参考代码中的四种旋转函数，里面的LL旋转和RR旋转均对树高进行了更新，同时在detachMin函数中我们沿着节点的右子树找到最小节点时，由于删除了一个节点，因此需要对这条路径上的节点更新树高，而在左右子树都存在的情况下，我们将detachMin返回的节点代替原先节点，而且该节点的右子树的树高已经发生了变化，因此需要对该节点更新树高。由于是递归进行的，所以在return的时候会依照搜索的顺序依次沿着搜索路径逆向balance所有节点。\\
+\indent 而balance的操作和avl示范代码基本一致，先判断是否符合avl树的平衡要求，若不符合，则找出高的那一侧，然后再看是单旋转还是双旋转，最后调用四个旋转函数中的一个完成该节点处的balance。
+
+\section{测试结果}
+从测试结果来看，由于在第一个测试中，所有数据都是随机生成，因此自身已经具有一定的平衡性，而且通过对比五颗树可以发现到最后删除的数比较多时，整颗树已经达到了一个比较好的平衡状态。同时在O2优化编译的情况下测试程序运行时间，均未超出3s，也没有发生节点内容拷贝现象和其他类型错误。通过valgrind检测，并未发生内存泄漏。
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
