@@ -1,0 +1,79 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{geometry, CJKutf8}
+\geometry{margin=1.5cm, vmargin={0pt,1cm}}
+\setlength{\topmargin}{-1cm}
+\setlength{\paperheight}{29.7cm}
+\setlength{\textheight}{25.3cm}
+
+% useful packages.
+\usepackage{xcolor}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{layout}
+\usepackage{listings}
+\usepackage{float, caption}
+
+\lstset{  
+  basicstyle=\ttfamily,  
+  backgroundcolor=\color{white},  
+  frame=single,  
+  framesep=5pt,  
+  rulecolor=\color{black},   
+  breaklines=true,  
+  xleftmargin=\parindent,  
+  xrightmargin=\parindent  
+}  
+
+% some common command
+\newcommand{\dif}{\mathrm{d}}
+\newcommand{\avg}[1]{\left\langle #1 \right\rangle}
+\newcommand{\difFrac}[2]{\frac{\dif #1}{\dif #2}}
+\newcommand{\pdfFrac}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\OFL}{\mathrm{OFL}}
+\newcommand{\UFL}{\mathrm{UFL}}
+\newcommand{\fl}{\mathrm{fl}}
+\newcommand{\op}{\odot}
+\newcommand{\Eabs}{E_{\mathrm{abs}}}
+\newcommand{\Erel}{E_{\mathrm{rel}}}
+
+\begin{document}
+
+\pagestyle{fancy}
+\fancyhead{}
+\lhead{骆弘毅, 3210103287}
+\chead{数据结构与算法第七次作业}
+\rhead{Nov.30th, 2024}
+
+\section{堆排序}
+本次作业思路较为简单，直接使用std中的make\_heap和pop\_heap即可实现，具体来说，先将数组内容传入，然后建堆，每次都用pop\_heap将最大值置于末端，然后修改堆的范围，并不断循环，最后数组就会呈现出正序，这是因为建堆默认是一个大根堆，较大数会处于尾端。\\
+\indent 测试来说，我一共建立了8个数组，生成了4种不同的序列，每种序列会放在两个数组内，分别让自己设计的排序函数和std中排序函数运行，并用chrono带的时间节点记录函数运行前的时间和运行后的时间，最后计算出时间间隔并输出，最后分别输出并比较，其中左侧为自设计函数，右侧为std的堆排序。最后用check函数检验自设计的堆排序是否正确，如果正确则输出correct。
+
+\section{测试结果}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+ & my heapsort time & std::heapsort time \\
+\hline
+random sequence & 560ms & 585ms \\
+\hline
+ordered sequence & 437ms & 566ms \\
+\hline
+reverse sequence & 453ms & 415ms \\
+\hline
+repetitive sequence & 477ms & 557ms \\
+\hline
+\end{tabular}
+\end{center}
+\indent 而且通过输出结果发现，排序全部正确。输出结果为四个"correct"(std的排序无需检测正确性)
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
